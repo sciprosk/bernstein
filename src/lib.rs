@@ -8,6 +8,8 @@
 
 use num::Num;
 
+mod impls;
+
 /// Contains coefficients of a polynomial of type `T` in the Bernstein basis
 /// over the default interval (0, 1). The number of dimensions in the basis
 /// is `N` which implies that the order of the basis polynomials in `N - 1`.
