@@ -50,4 +50,31 @@ impl<T, U, const N: usize> Bernstein<T, U, N> where
         }
     }
 
+    /// Return new instance that is an integral of the original polynomial in
+    /// the Bernstein basis.
+    ///
+    /// # Arguments
+    /// * `c` - the constant of integration.
+    ///
+    /// See R. T. Farouki, "Pythagorean-Hodograph Curves: Algebra and Geometry
+    /// Inseparable", Geometry and Computing (Eds. H. Edelsbrunner, K. Polthier,
+    /// and L Kobbelt) Springer (2008). -- p. 253, Sec. 11.2.6.
+    pub fn integ(&self, c: T) -> Bernstein<T, U, {N + 1}> where
+        [(); N + 1]:
+    {
+        let factor = (self.segm.1 - self.segm.0) / U::from_usize(N).unwrap();
+        let mut coef: [T; N + 1]= [c; N + 1];
+
+        for k in 1..N + 1 {
+            for j in 0..k  {
+                coef[k] = coef[k] + self.coef[j] * factor;
+            }
+        }
+
+        Bernstein {
+            segm: self.segm,
+            coef: coef,
+        }
+    }
+
 }
