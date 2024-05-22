@@ -5,10 +5,12 @@
 
 #![allow(incomplete_features)]
 #![feature(generic_const_exprs)]
+#![feature(step_trait)]
 
 use num::Num;
 
 mod impls;
+mod ops;
 
 /// Contains coefficients of a polynomial of type `T` in the Bernstein basis
 /// over the default interval (0, 1). The number of dimensions in the basis
