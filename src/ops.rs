@@ -1,15 +1,16 @@
 //! Implementations of binary operations on polynomials in the Bernstein basis.
 
-use num::Num;
+use num::{FromPrimitive, Num};
 use std::iter::Step;
 use std::ops::Mul;
+use std::fmt::{Debug, Display};
 
 use crate::Bernstein;
 
 // Calculate binomial coefficient (n, k) "n choose k".
 // Should only be called on types that can be safely compared with `==`.
 fn binom<T>(n: T, k: T) -> T where
-    T: Copy + Num + PartialOrd<T> + Step
+    T: Copy + Num + Step,
 {
     assert!(k >= T::zero());
     assert!(n >= T::zero());
@@ -30,16 +31,48 @@ fn binom<T>(n: T, k: T) -> T where
     next
 }
 
+// Lower summation bound that does not overflow for unsized types.
+fn low_bound<T>(a: T, b: T) -> T where T: Num + PartialOrd {
+    if a >= b {
+        return a - b
+    }
+    T::zero()
+}
+
+/// Calculate a product of two polynomials in the Bernstein basis.
+///
+/// See R. T. Farouki, "Pythagorean-Hodograph Curves: Algebra and Geometry
+/// Inseparable", Geometry and Computing (Eds. H. Edelsbrunner, K. Polthier,
+/// and L Kobbelt) Springer (2008). -- p. 258, Sec. 11.7, Eq. (11.20).
 impl<T, U, const N: usize, const M: usize>
-Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, N> where
+Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, {N}> where
+    T: Copy + Mul<Output = T> + Mul<U, Output = T> + Debug + Display,
+    U: Copy + Num + FromPrimitive,
     [(); N]:,
     [(); M]:,
-    [(); N + M]:
+    [(); N + M - 1]:
 {
-    type Output = Bernstein<T, U, {N + M}>;
+    type Output = Bernstein<T, U, {N + M - 1}>;
 
     fn mul(self, rhs: Bernstein<T, U, {M}>) -> Self::Output {
-        todo!();
+        let mut coef = [self.coef[0]; N + M - 1];
+
+        let n = N - 1;
+        let m = M - 1;
+
+        for k in 0..=m + n {
+            for j in low_bound(k, n)..=std::cmp::min(m, k) {
+                coef[k] = self.coef[j] * rhs.coef[k - j]
+                        * (U::from_usize(binom(m, j)).unwrap()
+                        * U::from_usize(binom(n, k - j)).unwrap()
+                        / U::from_usize(binom(m + n, k)).unwrap());
+            }
+        }
+
+        Bernstein {
+            coef: coef,
+            segm: self.segm,
+        }
     }
 }
 
@@ -73,6 +106,23 @@ mod tests {
         assert_eq!(binom(6, 5), 6);
         assert_eq!(binom(6, 6), 1);
         assert_eq!(binom(6, 7), 0);
+    }
+
+    #[test]
+    fn low_bound_usize() {
+        let u: usize = 3;
+        let v: usize = 7;
+        assert_eq!(low_bound(u, v), 0);
+        assert_eq!(low_bound(v, u), 4);
+    }
+
+    #[test]
+    fn product_fist_order() {
+        let p: Bernstein<f64, f64, 2> = Bernstein::new([0.0, 1.0]);
+        let q: Bernstein<f64, f64, 2> = Bernstein::new([2.0, 0.0]);
+
+        let c = p * q;
+        println!("c = {:?}", c);
     }
 
 }
