@@ -3,7 +3,6 @@
 use num::{FromPrimitive, Num};
 use std::iter::Step;
 use std::ops::Mul;
-use std::fmt::{Debug, Display};
 
 use crate::Bernstein;
 
@@ -46,8 +45,8 @@ fn low_bound<T>(a: T, b: T) -> T where T: Num + PartialOrd {
 /// and L Kobbelt) Springer (2008). -- p. 258, Sec. 11.7, Eq. (11.20).
 impl<T, U, const N: usize, const M: usize>
 Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, {N}> where
-    T: Copy + Mul<Output = T> + Mul<U, Output = T> + Debug + Display,
-    U: Copy + Num + FromPrimitive,
+    T: Copy + Mul<Output = T> + Mul<U, Output = T>,
+    U: Num + FromPrimitive,
     [(); N]:,
     [(); M]:,
     [(); N + M - 1]:
@@ -114,15 +113,6 @@ mod tests {
         let v: usize = 7;
         assert_eq!(low_bound(u, v), 0);
         assert_eq!(low_bound(v, u), 4);
-    }
-
-    #[test]
-    fn product_fist_order() {
-        let p: Bernstein<f64, f64, 2> = Bernstein::new([0.0, 1.0]);
-        let q: Bernstein<f64, f64, 2> = Bernstein::new([2.0, 0.0]);
-
-        let c = p * q;
-        println!("c = {:?}", c);
     }
 
 }
