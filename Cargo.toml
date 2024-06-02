@@ -7,4 +7,5 @@ edition = "2021"
 num = "0.4.3"
 
 [dev-dependencies]
+nalgebra = "0.32.5"
 plotters = "0.3.3"
