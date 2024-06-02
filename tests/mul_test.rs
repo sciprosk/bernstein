@@ -3,9 +3,8 @@
 
 use bernstein::Bernstein;
 
-use crate::utils::equal_with_abs_tol;
-
-mod utils;
+mod routines;
+pub use routines::*;
 
 #[test]
 fn product_fist_order() {

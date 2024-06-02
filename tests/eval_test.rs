@@ -2,9 +2,8 @@ use num::{One, Rational64, Zero};
 
 use bernstein::Bernstein;
 
-use crate::utils::equal_with_abs_tol;
-
-mod utils;
+mod routines;
+pub use routines::*;
 
 #[test]
 fn eval_zero_order_f64() {

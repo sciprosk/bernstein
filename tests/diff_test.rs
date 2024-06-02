@@ -2,9 +2,8 @@ use num::Complex;
 
 use bernstein::Bernstein;
 
-use crate::utils::equal_with_abs_tol;
-
-mod utils;
+mod routines;
+pub use routines::*;
 
 #[test]
 fn diff_zero_order() {
