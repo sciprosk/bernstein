@@ -3,6 +3,9 @@
 
 use bernstein::Bernstein;
 
+use num::complex::Complex64;
+use num::rational::Rational64;
+
 mod routines;
 pub use routines::*;
 
@@ -84,4 +87,35 @@ fn product_second_order_by_third_order() {
     assert!(equal_with_abs_tol(coef[3], 0.6, DBL_TOL));
     assert!(equal_with_abs_tol(coef[4], 0.0, DBL_TOL));
     assert!(equal_with_abs_tol(coef[5], 0.0, DBL_TOL));
+}
+
+#[test]
+fn mul_right_by_scalar() {
+    const DBL_TOL: f64 = 1.0e-15;
+
+    let c: Bernstein<_, f64, 3> = Bernstein::new([1.0, 2.0, 3.0]);
+    let p = c * 3.0;
+    let coef = p.coef().clone();
+    assert!(equal_with_abs_tol(coef[0], 3.0, DBL_TOL));
+    assert!(equal_with_abs_tol(coef[1], 6.0, DBL_TOL));
+    assert!(equal_with_abs_tol(coef[2], 9.0, DBL_TOL));
+
+    let p0 = Complex64::new(1.0, 2.0);
+    let p1 = Complex64::new(3.0, 4.0);
+
+    let c: Bernstein<_, f64, 2> = Bernstein::new([p0, p1]);
+    let p = c * 2.0;
+    let coef = p.coef().clone();
+    assert!(equal_with_abs_tol(coef[0].re, 2.0, DBL_TOL));
+    assert!(equal_with_abs_tol(coef[0].im, 4.0, DBL_TOL));
+    assert!(equal_with_abs_tol(coef[1].re, 6.0, DBL_TOL));
+    assert!(equal_with_abs_tol(coef[1].im, 8.0, DBL_TOL));
+
+    let p0 = Rational64::new(1, 2);
+    let p1 = Rational64::new(3, 4);
+    let c: Bernstein<_, f64, 2> = Bernstein::new([p0, p1]);
+    let p = c * 2;
+    let coef = p.coef().clone();
+    assert_eq!(coef[0], Rational64::new(1, 1));
+    assert_eq!(coef[1], Rational64::new(3, 2));
 }

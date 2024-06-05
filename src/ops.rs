@@ -75,13 +75,14 @@ Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, {N}> where
     }
 }
 
-impl<T, U, const N: usize> Mul<U> for Bernstein<T, U, {N}> where
-    T: Copy + Mul<U, Output = T>,
-    U: Copy,
+/// Right hand side coefficient-wise multiplication by a scalar.
+impl<T, U, W, const N: usize> Mul<W> for Bernstein<T, U, N> where
+    T: Copy + Mul<W, Output = T>,
+    W: Copy,
     [(); N]:
 {
-    type Output = Bernstein<T, U, {N}>;
-    fn mul(self, rhs: U) -> Self::Output {
+    type Output = Bernstein<T, U, N>;
+    fn mul(self, rhs: W) -> Self::Output {
         let mut coef = self.coef;
         for i in 0..N {
             coef[i] = self.coef[i] * rhs;
