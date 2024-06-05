@@ -75,6 +75,50 @@ Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, {N}> where
     }
 }
 
+impl<T, U, const N: usize> Mul<U> for Bernstein<T, U, {N}> where
+    T: Copy + Mul<U, Output = T>,
+    U: Copy,
+    [(); N]:
+{
+    type Output = Bernstein<T, U, {N}>;
+    fn mul(self, rhs: U) -> Self::Output {
+        let mut coef = self.coef;
+        for i in 0..N {
+            coef[i] = self.coef[i] * rhs;
+        }
+
+        Bernstein {
+            coef: coef,
+            segm: self.segm,
+        }
+    }
+}
+
+macro_rules! left_scalar_mul_impl(
+    ($($U: ty),* $(,)*) => {$(
+        impl<T, const N: usize> Mul<Bernstein<T, $U, {N}>> for $U where
+            T: Copy + Mul<$U, Output = T>,
+            [(); N]:
+        {
+            type Output = Bernstein<T, $U, {N}>;
+
+            fn mul(self, rhs: Bernstein<T, $U, {N}>) -> Self::Output {
+                let mut coef = rhs.coef;
+                for i in 0..N {
+                    coef[i] = rhs.coef[i] * self;
+                }
+
+                Bernstein {
+                    coef: coef,
+                    segm: rhs.segm,
+                }
+            }
+        }
+    )*}
+);
+
+left_scalar_mul_impl!(f32, f64);
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -114,5 +158,4 @@ mod tests {
         assert_eq!(low_bound(u, v), 0);
         assert_eq!(low_bound(v, u), 4);
     }
-
 }
