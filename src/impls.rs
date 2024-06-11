@@ -45,7 +45,7 @@ where
 
         Bernstein {
             segm: self.segm,
-            coef: coef,
+            coef,
         }
     }
 
@@ -73,7 +73,7 @@ where
 
         Bernstein {
             segm: self.segm,
-            coef: coef,
+            coef,
         }
     }
 }

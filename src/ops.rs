@@ -1,6 +1,6 @@
 //! Implementations of binary operations on polynomials in the Bernstein basis.
 
-use num::{FromPrimitive, Num};
+use num::{FromPrimitive, Num, Zero};
 use std::iter::Step;
 use std::ops::{Add, Mul, Sub};
 
@@ -49,7 +49,7 @@ where
 /// and L Kobbelt) Springer (2008). -- p. 258, Sec. 11.7, Eq. (11.20).
 impl<T, U, const N: usize, const M: usize> Mul<Bernstein<T, U, { M }>> for Bernstein<T, U, { N }>
 where
-    T: Copy + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Mul<U, Output = T>,
+    T: Copy + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Mul<U, Output = T> + Zero,
     U: Num + FromPrimitive,
     [(); N]:,
     [(); M]:,
@@ -58,7 +58,7 @@ where
     type Output = Bernstein<T, U, { N + M - 1 }>;
 
     fn mul(self, rhs: Bernstein<T, U, { M }>) -> Self::Output {
-        let mut coef = [self.coef[0] - self.coef[0]; N + M - 1];
+        let mut coef = [T::zero(); N + M - 1];
 
         let n = M - 1;
         let m = N - 1;
@@ -75,8 +75,8 @@ where
         }
 
         Bernstein {
-            coef: coef,
             segm: self.segm,
+            coef,
         }
     }
 }
@@ -96,8 +96,8 @@ where
         }
 
         Bernstein {
-            coef: coef,
             segm: self.segm,
+            coef,
         }
     }
 }
@@ -117,8 +117,8 @@ macro_rules! left_scalar_mul_impl(
                 }
 
                 Bernstein {
-                    coef: coef,
                     segm: rhs.segm,
+                    coef
                 }
             }
         }

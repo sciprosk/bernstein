@@ -29,8 +29,8 @@ where
     /// coefficients in the Bernstein basis over the default interval (0, 1).
     pub fn new(coef: [T; N]) -> Bernstein<T, U, N> {
         Bernstein {
-            coef: coef,
             segm: (U::zero(), U::one()),
+            coef,
         }
     }
 
