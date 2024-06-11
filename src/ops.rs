@@ -78,7 +78,7 @@ Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, {N}> where
 /// Right hand side coefficient-wise multiplication by a scalar.
 impl<T, U, W, const N: usize> Mul<W> for Bernstein<T, U, N> where
     T: Copy + Mul<W, Output = T>,
-    W: Copy,
+    W: Copy + Num,
     [(); N]:
 {
     type Output = Bernstein<T, U, N>;
