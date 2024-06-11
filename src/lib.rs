@@ -21,10 +21,10 @@ pub struct Bernstein<T, U, const N: usize> {
     segm: (U, U),
 }
 
-impl<T, U, const N: usize> Bernstein<T, U, N> where
+impl<T, U, const N: usize> Bernstein<T, U, N>
+where
     U: Num,
 {
-
     /// Create new instance of a Bernstein polynomial from an array of
     /// coefficients in the Bernstein basis over the default interval (0, 1).
     pub fn new(coef: [T; N]) -> Bernstein<T, U, N> {
@@ -38,7 +38,6 @@ impl<T, U, const N: usize> Bernstein<T, U, N> where
     pub fn coef(&self) -> &[T; N] {
         &self.coef
     }
-
 }
 
 #[cfg(test)]
@@ -47,7 +46,10 @@ mod tests {
 
     #[test]
     fn bernstein_private_container_basic() {
-        let c = Bernstein{coef: [0, 1, 2], segm: (0, 1)};
+        let c = Bernstein {
+            coef: [0, 1, 2],
+            segm: (0, 1),
+        };
         assert_eq!(c.coef, [0, 1, 2]);
         assert_eq!(c.segm, (0, 1));
     }

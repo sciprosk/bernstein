@@ -2,13 +2,14 @@
 
 use num::{FromPrimitive, Num};
 use std::iter::Step;
-use std::ops::{Add, Sub, Mul};
+use std::ops::{Add, Mul, Sub};
 
 use crate::Bernstein;
 
 // Calculate binomial coefficient (n, k) "n choose k".
 // Should only be called on types that can be safely compared with `==`.
-fn binom<T>(n: T, k: T) -> T where
+fn binom<T>(n: T, k: T) -> T
+where
     T: Copy + Num + Step,
 {
     assert!(k >= T::zero());
@@ -31,9 +32,12 @@ fn binom<T>(n: T, k: T) -> T where
 }
 
 // Lower summation bound that does not overflow for unsized types.
-fn low_bound<T>(a: T, b: T) -> T where T: Num + PartialOrd {
+fn low_bound<T>(a: T, b: T) -> T
+where
+    T: Num + PartialOrd,
+{
     if a >= b {
-        return a - b
+        return a - b;
     }
     T::zero()
 }
@@ -43,17 +47,17 @@ fn low_bound<T>(a: T, b: T) -> T where T: Num + PartialOrd {
 /// See R. T. Farouki, "Pythagorean-Hodograph Curves: Algebra and Geometry
 /// Inseparable", Geometry and Computing (Eds. H. Edelsbrunner, K. Polthier,
 /// and L Kobbelt) Springer (2008). -- p. 258, Sec. 11.7, Eq. (11.20).
-impl<T, U, const N: usize, const M: usize>
-Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, {N}> where
+impl<T, U, const N: usize, const M: usize> Mul<Bernstein<T, U, { M }>> for Bernstein<T, U, { N }>
+where
     T: Copy + Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Mul<U, Output = T>,
     U: Num + FromPrimitive,
     [(); N]:,
     [(); M]:,
-    [(); N + M - 1]:
+    [(); N + M - 1]:,
 {
-    type Output = Bernstein<T, U, {N + M - 1}>;
+    type Output = Bernstein<T, U, { N + M - 1 }>;
 
-    fn mul(self, rhs: Bernstein<T, U, {M}>) -> Self::Output {
+    fn mul(self, rhs: Bernstein<T, U, { M }>) -> Self::Output {
         let mut coef = [self.coef[0] - self.coef[0]; N + M - 1];
 
         let n = M - 1;
@@ -61,10 +65,12 @@ Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, {N}> where
 
         for k in 0..=m + n {
             for j in low_bound(k, n)..=std::cmp::min(m, k) {
-                coef[k] = coef[k] + self.coef[j] * rhs.coef[k - j]
+                coef[k] = coef[k]
+                    + self.coef[j]
+                        * rhs.coef[k - j]
                         * (U::from_usize(binom(m, j)).unwrap()
-                        * U::from_usize(binom(n, k - j)).unwrap()
-                        / U::from_usize(binom(m + n, k)).unwrap());
+                            * U::from_usize(binom(n, k - j)).unwrap()
+                            / U::from_usize(binom(m + n, k)).unwrap());
             }
         }
 
@@ -76,10 +82,11 @@ Mul<Bernstein<T, U, {M}>> for Bernstein<T, U, {N}> where
 }
 
 /// Right hand side coefficient-wise multiplication by a scalar.
-impl<T, U, W, const N: usize> Mul<W> for Bernstein<T, U, N> where
+impl<T, U, W, const N: usize> Mul<W> for Bernstein<T, U, N>
+where
     T: Copy + Mul<W, Output = T>,
     W: Copy + Num,
-    [(); N]:
+    [(); N]:,
 {
     type Output = Bernstein<T, U, N>;
     fn mul(self, rhs: W) -> Self::Output {
