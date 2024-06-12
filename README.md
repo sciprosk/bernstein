@@ -1,4 +1,4 @@
-# bernstein: polynomials in Bernstein basis
+# bernstein: generic polynomials in Bernstein basis
 
 **Attention:** This library is experimental and is based on the unstable
 `generic_const_exprs` feature that is only available in Nightly Rust.
