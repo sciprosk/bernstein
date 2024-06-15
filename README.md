@@ -78,9 +78,7 @@ using [Plotters](https://docs.rs/plotters/latest/plotters/) gives the following 
 ![pythgorean_hodograph1](https://github.com/sciprosk/bernstein/assets/105472369/41193bdc-fcc4-4ece-92ea-111b23dc2f00)
 ![pythgorean_hodograph](https://github.com/sciprosk/bernstein/assets/105472369/d1b8d975-a439-4b14-a978-77616861806b)
 
-
-
-
 ## References
 1. [L. Piegl & W. Tiller. "The NURBS book". Springer Science & Business Media (2012)](https://link.springer.com/book/10.1007/978-3-642-59223-2).
 2. [R. T. Farouki, "Pythagorean-Hodograph Curves: Algebra and Geometry Inseparable", Geometry and Computing (Eds. H. Edelsbrunner, K. Polthier, and L Kobbelt) Springer (2008)](https://link.springer.com/book/10.1007/978-3-540-73398-0).
+3. [R.T. Farouki, "Construction of G2 rounded corners with Pythagorean-hodograph curves", Computer Aided Geometric Design, 31(2) (2014)](https://escholarship.org/uc/item/6fq8n655).
