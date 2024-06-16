@@ -41,24 +41,24 @@ Define curve parameters such as size, shape, orientation, and the initial point,
 the control polygon of an internal cubic hodograph curve in the complex plane. For the details
 on the math formalism see Refs. [2, 3].
 ```rust
-    // Specify parameters of the curve
-    let d = 1.0;                             // cornering length -- distance
-                                             // from entry/exit to the corner
-    let theta = 0.0;                         // orientation of the corner
-    let delta = std::f32::consts::FRAC_PI_2; // angle of the corner
+// Specify parameters of the curve
+let d = 1.0;                             // cornering length -- distance
+                                         // from entry/exit to the corner
+let theta = 0.0;                         // orientation of the corner
+let delta = std::f32::consts::FRAC_PI_2; // angle of the corner
 
-    // Actual formula that sets the internal representation
-    // of the quintic Pythgorean-hodograh curve.
-    let rho = f32::sqrt(30.0 * d * f32::cos(0.5 * delta) / (6.0 * f32::cos(0.5 * delta) + 1.0));
+// Actual formula that sets the internal representation
+// of the quintic Pythgorean-hodograh curve.
+let rho = f32::sqrt(30.0 * d * f32::cos(0.5 * delta) / (6.0 * f32::cos(0.5 * delta) + 1.0));
 
-    // Initial point of the curve in the complex plane.
-    let p0 = Complex::new(-1.0, 0.0);
+// Initial point of the curve in the complex plane.
+let p0 = Complex::new(-1.0, 0.0);
 
-    // Control poligon for the internal representation of the curve
-    // in the complex plane.
-    let w0 = rho * Complex::exp(0.5 * theta * Complex::i());
-    let w1 = Complex::zero();
-    let w2 = rho * Complex::exp(0.5 * (theta + delta) * Complex::i());
+// Control poligon for the internal representation of the curve
+// in the complex plane.
+let w0 = rho * Complex::exp(0.5 * theta * Complex::i());
+let w1 = Complex::zero();
+let w2 = rho * Complex::exp(0.5 * (theta + delta) * Complex::i());
 ```
 The following creates a cubic curve in the complex plane (internal representation), that is
 used to generate the fifth order Pythagorean-hodograph curve by taking a square of the
@@ -66,10 +66,10 @@ cubic curve (this sets the hodograph of the quintic curve), and then integrating
 the starting point in the complex plane. The resulting curve has six points in its control
 polygon.
 ```rust
-    // Construct Bernstein polynomial in the complex plane from control polygon.
-    let w: Bernstein<Complex, f32, 3> = Bernstein::new([w0, w1, w2]);
-    // Take the square and integrate from the initial point.
-    let p = (w * w).integ(p0);
+// Construct Bernstein polynomial in the complex plane from control polygon.
+let w: Bernstein<Complex, f32, 3> = Bernstein::new([w0, w1, w2]);
+// Take the square and integrate from the initial point.
+let p = (w * w).integ(p0);
 ```
 Now, we can use `p.eval(u)` to sample this curve at some values of the parameter `u`. For example, sampling
 using [Plotters](https://docs.rs/plotters/latest/plotters/) gives the following symmetric cornering curves for
