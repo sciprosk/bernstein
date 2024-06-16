@@ -73,13 +73,10 @@ let p = (w * w).integ(p0);
 ```
 Now, we can use `p.eval(u)` to sample this curve at some values of the parameter `u`. For example, sampling
 using [Plotters](https://docs.rs/plotters/latest/plotters/) gives the following symmetric cornering curves for
-90-degree and 60-degree corners. Note that for any _symmetric_ _quintic_ Pythagorean-hodograph curve, the control poygon has identical control 
+90-degree and 60-degree corners. Note that for any _symmetric_ _quintic_ Pythagorean-hodograph curve, the control polygon has identical control 
 points (P0, P1 = P2, P3 = P4, P5).
 ![pythgorean_hodograph1](https://github.com/sciprosk/bernstein/assets/105472369/1a700752-dfd3-4e29-b316-44bfbf8ebf00)
 ![pythgorean_hodograph](https://github.com/sciprosk/bernstein/assets/105472369/8f2c5202-6839-4960-8924-37c2d9e436de)
-
-
-
 
 ## References
 1. [L. Piegl & W. Tiller. "The NURBS book". Springer Science & Business Media (2012)](https://link.springer.com/book/10.1007/978-3-642-59223-2).
