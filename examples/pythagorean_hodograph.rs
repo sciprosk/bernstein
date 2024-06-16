@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let d = 1.0;                             // cornering length -- distance
                                                   // from entry/exit to the corner
     let theta = 0.0;                         // orientation of the corner
-    let delta = std::f32::consts::FRAC_PI_2; // angle of the corner
+    let delta = 2.0 * std::f32::consts::FRAC_PI_3; // angle of the corner
 
     // Actual formula that sets the parameter for the internal representation
     // of the quintic Pythgorean-hodograh curve.
@@ -43,6 +43,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Take the square and integrate from the initial point.
     let p = (w * w).integ(p0);
+    // Extract control polygon.
+    let cp = p.coef().clone();
 
     // Draw the picture using Plotters backend.
     let root = BitMapBackend::new("pythgorean_hodograph.png", (800, 800)).into_drawing_area();
@@ -61,13 +63,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .draw_series(LineSeries::new((0..=1000)
         // Sample the curve at each point along the x-axis.
         .map(|x| x as f32 / (1000 as f32))
-        .map(|x| (p.eval(x).re, p.eval(x).im)), &RED))?;
+        .map(|x| (p.eval(x).re, p.eval(x).im)), (&RED).stroke_width(2)))?;
 
+    // Draw supporting corner lines.
     chart
-        .configure_series_labels()
-        .background_style(&WHITE.mix(0.8))
-        .border_style(&BLACK)
-        .draw()?;
+        .draw_series(
+            DashedLineSeries::new([(-1.0, 0.0), (0.0, 0.0), (cp.last().unwrap().re, cp.last().unwrap().im)], 3, 3, (&BLACK).into())
+        )?;
+
+    // Draw control polygon.
+    chart.draw_series(PointSeries::of_element(cp.iter().map(|x| -> (f32, f32) {(x.re, x.im)}), 3, &BLUE,
+        &|c, s, st| {
+            Circle::new(c,s,st.filled())
+        },
+    ))?;
 
     root.present()?;
     Ok(())
